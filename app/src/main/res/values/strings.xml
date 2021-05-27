@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">PomodoroTimer</string>
+    <string name="standardTime">25:00</string>
+    <string name="pomodoro">Pomodoro</string>
+    <string name="shortBreak">Short Break</string>
+    <string name="longBreak">Long Break</string>
+    <string name="start">start</string>
+    <string name="stop">stop</string>
+    <string name="reset">reset</string>
 </resources>
