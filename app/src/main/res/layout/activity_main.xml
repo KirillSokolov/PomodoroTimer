@@ -80,6 +80,7 @@
             android:id="@+id/stop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="cancelTimer"
             android:text="@string/stop"
             app:backgroundTint="@android:color/holo_red_dark" />
 
@@ -87,10 +88,12 @@
             android:id="@+id/reset"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="resetTimer"
             android:text="@string/reset"
             android:textColor="@color/black"
             android:textStyle="bold"
             app:backgroundTint="@android:color/darker_gray" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
