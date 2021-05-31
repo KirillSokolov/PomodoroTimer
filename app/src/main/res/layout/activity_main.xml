@@ -6,37 +6,63 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/pomotoroTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/pomodoroTitle"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:id="@+id/primaryMenu"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/pomotoroTitle">
 
         <Button
             android:id="@+id/pomodoro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/pomodoro" />
+            android:onClick="pomodoroTimer"
+            android:text="@string/pomodoro"
+            android:textColor="@color/black"
+            app:backgroundTint="@android:color/darker_gray" />
 
         <Button
             android:id="@+id/shortBreak"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/shortBreak" />
+            android:onClick="shortBreak"
+            android:text="@string/shortBreak"
+            android:textColor="@color/black"
+            app:backgroundTint="@android:color/darker_gray" />
 
         <Button
             android:id="@+id/longBreak"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/longBreak" />
+            android:onClick="longBreak"
+            android:text="@string/longBreak"
+            android:textColor="@color/black"
+            app:backgroundTint="@android:color/darker_gray" />
 
     </LinearLayout>
 
@@ -58,11 +84,11 @@
         android:id="@+id/secundaryMenu"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +100,7 @@
             android:layout_height="wrap_content"
             android:onClick="test"
             android:text="@string/start"
-            app:backgroundTint="@android:color/holo_green_dark" />
+            app:backgroundTint="@color/greenMarked" />
 
         <Button
             android:id="@+id/stop"

@@ -7,4 +7,5 @@
     <string name="start">start</string>
     <string name="stop">stop</string>
     <string name="reset">reset</string>
+    <string name="pomodoroTitle">Pomodoro Timer</string>
 </resources>
