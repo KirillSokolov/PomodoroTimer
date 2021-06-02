@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.standardTime.text = simpleDateFormat.format(pomodoroTimerGlobal * 60 * 1000)
+        resetTimer(view)
 
     }
 
