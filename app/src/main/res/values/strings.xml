@@ -8,4 +8,11 @@
     <string name="stop">stop</string>
     <string name="reset">reset</string>
     <string name="pomodoroTitle">Pomodoro Timer</string>
+    <string name="pomodoroTime">Pomodoro</string>
+    <string name="shortTime">Short Break</string>
+    <string name="longTime">Long Break</string>
+    <string name="apply">Apply</string>
+    <string name="settingsTitle">Settings</string>
+    <string name="darkTheme">DarkTheme</string>
+
 </resources>
