@@ -14,5 +14,6 @@
     <string name="apply">Apply</string>
     <string name="settingsTitle">Settings</string>
     <string name="darkTheme">DarkTheme</string>
+    <string name="settings_button">Settings button</string>
 
 </resources>
