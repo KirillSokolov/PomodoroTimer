@@ -16,7 +16,8 @@
         android:onClick="returnMain"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_close_24" />
+        app:srcCompat="@drawable/ic_baseline_close_24"
+        android:contentDescription="@string/close_button" />
 
     <TextView
         android:id="@+id/settingsTitle"
@@ -43,7 +44,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shortTime" />
 
-    <Switch
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/darkTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,7 +54,8 @@
         android:text="@string/darkTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/apply" />
+        app:layout_constraintTop_toBottomOf="@+id/apply"
+        android:drawableStart="@drawable/ic_baseline_bedtime_24" />
 
     <NumberPicker
         android:id="@+id/pomodoroTime"

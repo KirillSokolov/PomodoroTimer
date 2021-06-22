@@ -15,5 +15,6 @@
     <string name="settingsTitle">Settings</string>
     <string name="darkTheme">DarkTheme</string>
     <string name="settings_button">Settings button</string>
+    <string name="close_button">close button</string>
 
 </resources>
