@@ -2,18 +2,14 @@ package com.example.pomodorotimer
 
 import android.R
 import android.app.*
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.media.RingtoneManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.preference.PreferenceManager
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -35,19 +31,24 @@ class MainActivity : AppCompatActivity() {
     var pomodoroTimerGlobal = 25
     var shortTimeGlobal = 5
     var longTimeGlobal = 10
-    val simpleDateFormat = SimpleDateFormat("mm:ss")
+    val simpleDateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
     var checkedThemeGlobal = false
     var date = miliTimer
     var notificationId = createID()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Todo Change the project to findViewById.
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
             val view = binding.root
             setContentView(view)
-            binding.pomodoro.setBackgroundColor(resources.getColor(R.color.holo_green_dark))
+            binding.pomodoro.setBackgroundColor(ContextCompat.getColor(
+                applicationContext,
+                R.color.holo_green_dark
+            ))
 
-            val pref = PreferenceManager.getDefaultSharedPreferences(this)
+            val pref = getSharedPreferences(
+            "com.example.pomodorotimer", Context.MODE_PRIVATE);
             pref.apply {
                 val pomodoro = getInt("1", 25)
                 val shortTime = getInt("2", 5)
@@ -78,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         val channelId = "channel-id"
         val channelName = "Channel Name"
 
-        var uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
         val importance = NotificationManager.IMPORTANCE_HIGH
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -112,8 +113,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun test(view: View) {
-        var mTextField = binding.standardTime
+    fun test(v: View) {
+        val mTextField = binding.standardTime
         reset = false
 
         if (isInit) {
@@ -126,9 +127,9 @@ class MainActivity : AppCompatActivity() {
             isInit = true
         }
 
-        var mBuilder: NotificationCompat.Builder = onTopNotification("Pomodoro", applicationContext)
+        val mBuilder: NotificationCompat.Builder = onTopNotification("Pomodoro", applicationContext)
 
-        val count = object : CountDownTimer(timer, 1000) {
+        object : CountDownTimer(timer, 1000) {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onTick(millisUntilFinished: Long) {
                 if (!continueTimer) {
@@ -142,31 +143,29 @@ class MainActivity : AppCompatActivity() {
                     }
                 } else {
                     miliTimer = millisUntilFinished
-                    var date = millisUntilFinished
-                    var dateText = simpleDateFormat.format(date)
-                    mTextField.setText(dateText)
+                    val dateText = simpleDateFormat.format(millisUntilFinished)
+                    mTextField.text = dateText
                 }
 
-                var date = millisUntilFinished
-                var dateText = simpleDateFormat.format(date)
+                val dateText = simpleDateFormat.format(millisUntilFinished)
 
                 onTopNotificationTick(dateText, mBuilder)
             }
 
             override fun onFinish() {
-                mTextField.setText("00:00")
+                mTextField.text = "00:00"
                 notification("PomodoroTimer", "The time is over", applicationContext)
             }
         }.start()
     }
 
-    fun cancelTimer(view: View) {
+    fun cancelTimer(v: View) {
         continueTimer = false
     }
 
-    fun resetTimer(view: View) {
+    fun resetTimer(v: View) {
         reset = true
-        cancelTimer(view)
+        cancelTimer(v)
         isInitFalse()
 
         if (reset) {
@@ -178,54 +177,54 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun pomodoroTimer(view: View) {
+    fun pomodoroTimer(v: View) {
         check = 1
-        resetTimer(view)
+        resetTimer(v)
         isInitFalse()
         timer = 60 * pomodoroTimerGlobal * 1000L
         binding.standardTime.text = simpleDateFormat.format(pomodoroTimerGlobal * 60 * 1000)
 
         resetColor()
-        binding.pomodoro.setBackgroundColor(resources.getColor(R.color.holo_green_dark))
-        binding.pomodoro.setTextColor(resources.getColor(R.color.white))
+        binding.pomodoro.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.holo_green_dark))
+        binding.pomodoro.setTextColor(ContextCompat.getColor(applicationContext, R.color.white))
     }
 
-    fun shortBreak(view: View) {
+    fun shortBreak(v: View) {
         check = 2
-        resetTimer(view)
+        resetTimer(v)
         isInitFalse()
         timer = 60 * shortTimeGlobal * 1000L
         binding.standardTime.text = simpleDateFormat.format(shortTimeGlobal * 60 * 1000)
 
         resetColor()
-        binding.shortBreak.setBackgroundColor(resources.getColor(R.color.holo_green_dark))
-        binding.shortBreak.setTextColor(resources.getColor(R.color.white))
+        binding.shortBreak.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.holo_green_dark))
+        binding.shortBreak.setTextColor(ContextCompat.getColor(applicationContext, R.color.white))
     }
 
-    fun longBreak(view: View) {
+    fun longBreak(v: View) {
         check = 3
-        resetTimer(view)
+        resetTimer(v)
         isInitFalse()
         timer = 60 * longTimeGlobal * 1000L
         binding.standardTime.text = simpleDateFormat.format(longTimeGlobal * 60 * 1000)
         resetColor()
-        binding.longBreak.setBackgroundColor(resources.getColor(R.color.holo_green_dark))
-        binding.longBreak.setTextColor(resources.getColor(R.color.white))
+        binding.longBreak.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.holo_green_dark))
+        binding.longBreak.setTextColor(ContextCompat.getColor(applicationContext, R.color.white))
     }
 
-    fun isInitFalse() {
+    private fun isInitFalse() {
         if (isInit) {
             isInit = false
         }
     }
 
-    fun resetColor() {
-        binding.pomodoro.setBackgroundColor(resources.getColor(R.color.darker_gray))
-        binding.pomodoro.setTextColor(resources.getColor(R.color.black))
-        binding.shortBreak.setBackgroundColor(resources.getColor(R.color.darker_gray))
-        binding.shortBreak.setTextColor(resources.getColor(R.color.black))
-        binding.longBreak.setBackgroundColor(resources.getColor(R.color.darker_gray))
-        binding.longBreak.setTextColor(resources.getColor(R.color.black))
+    private fun resetColor() {
+        binding.pomodoro.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.darker_gray))
+        binding.pomodoro.setTextColor(ContextCompat.getColor(applicationContext, R.color.black))
+        binding.shortBreak.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.darker_gray))
+        binding.shortBreak.setTextColor(ContextCompat.getColor(applicationContext, R.color.black))
+        binding.longBreak.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.darker_gray))
+        binding.longBreak.setTextColor(ContextCompat.getColor(applicationContext, R.color.black))
     }
 
     fun settings(v: View) {
@@ -235,14 +234,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    // Todo implement Broadcast Receiver
     fun onTopNotification(title: String?,
                           context: Context) : NotificationCompat.Builder {
 
-        var mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         val importance = NotificationManager.IMPORTANCE_HIGH
 
-        var existChannel : NotificationChannel? = mNotificationManager.getNotificationChannel("Pomodoro timer")
-        var chamaExiste = existChannel?.id.equals("Pomodoro timer") ?: false
+        val existChannel : NotificationChannel? = mNotificationManager.getNotificationChannel("Pomodoro timer")
+        val chamaExiste = existChannel?.id.equals("Pomodoro timer")
 
         val channelId = "Pomodoro Timer"
         val channelName = "Countdown"
@@ -256,7 +256,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        var dateText = simpleDateFormat.format(date)
+        val dateText = simpleDateFormat.format(date)
 
         var numMessages = 0
         val mBuilder: NotificationCompat.Builder = NotificationCompat.Builder(applicationContext, channelId)
@@ -282,13 +282,9 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun onTopNotificationTick(value: String, mBuilder: NotificationCompat.Builder) {
 
-        var mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
-        val channelId = "Pomodoro Timer"
-
-//        var dateText = simpleDateFormat.format(date)
-
-        mBuilder.setContentText(value);
+        mBuilder.setContentText(value)
         mNotificationManager.notify(
             notificationId,
             mBuilder.build())

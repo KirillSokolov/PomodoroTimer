@@ -16,5 +16,6 @@
     <string name="darkTheme">DarkTheme</string>
     <string name="settings_button">Settings button</string>
     <string name="close_button">close button</string>
+    <string name="zero_hour">00:00</string>
 
 </resources>
