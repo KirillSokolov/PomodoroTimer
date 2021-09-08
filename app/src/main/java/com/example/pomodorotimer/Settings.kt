@@ -1,18 +1,13 @@
 package com.example.pomodorotimer
 
+import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.view.View
 import android.widget.NumberPicker
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.get
-import com.example.pomodorotimer.databinding.ActivityMainBinding
 import com.example.pomodorotimer.databinding.ActivitySettingsBinding
-import kotlin.math.absoluteValue
 
 class Settings : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
@@ -22,25 +17,36 @@ class Settings : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        var pomodoroValue: NumberPicker = binding.pomodoroTime
-        pomodoroValue.setMinValue(1);
-        pomodoroValue.setMaxValue(60);
-        pomodoroValue.setWrapSelectorWheel(true);
-        pomodoroValue.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        binding.imageButton.setOnClickListener {
+            returnMain()
+        }
+        binding.apply.setOnClickListener {
+            saveData()
+        }
+        binding.darkTheme.setOnClickListener {
+            darkTheme()
+        }
 
-        var shortValue: NumberPicker = binding.shortTime
-        shortValue.setMinValue(1);
-        shortValue.setMaxValue(60);
-        shortValue.setWrapSelectorWheel(true);
-        shortValue.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        val pomodoroValue: NumberPicker = binding.pomodoroTime
+        pomodoroValue.minValue = 1
+        pomodoroValue.maxValue = 60
+        pomodoroValue.wrapSelectorWheel = true
+        pomodoroValue.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
 
-        var longValue: NumberPicker = binding.longTime
-        longValue.setMinValue(1);
-        longValue.setMaxValue(60);
-        longValue.setWrapSelectorWheel(true);
-        longValue.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        val shortValue: NumberPicker = binding.shortTime
+        shortValue.minValue = 1
+        shortValue.maxValue = 60
+        shortValue.wrapSelectorWheel = true
+        shortValue.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
 
-        val pref = PreferenceManager.getDefaultSharedPreferences(this)
+        val longValue: NumberPicker = binding.longTime
+        longValue.minValue = 1
+        longValue.maxValue = 60
+        longValue.wrapSelectorWheel = true
+        longValue.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
+
+        val pref = getSharedPreferences(
+            "com.example.pomodorotimer", Context.MODE_PRIVATE)
         pref.apply {
             val pomodoro = getInt("1", 25)
             val shortTime = getInt("2", 5)
@@ -50,19 +56,20 @@ class Settings : AppCompatActivity() {
             binding.shortTime.value = shortTime
             binding.longTime.value = longTime
 
-            var checked = getBoolean("CHECKED", false)
+            val checked = getBoolean("CHECKED", false)
             binding.darkTheme.isChecked = checked
 
         }
     }
 
-    fun saveData(v: View?) {
-        val pref = PreferenceManager.getDefaultSharedPreferences(this)
+    private fun saveData() {
+        val pref = getSharedPreferences(
+            "com.example.pomodorotimer", Context.MODE_PRIVATE)
         val editor = pref.edit()
 
-        var pomodoroTimeGet = binding.pomodoroTime.value
-        var shortTimeGet = binding.shortTime.value
-        var longTimeGet = binding.longTime.value
+        val pomodoroTimeGet = binding.pomodoroTime.value
+        val shortTimeGet = binding.shortTime.value
+        val longTimeGet = binding.longTime.value
 
         editor
             .putInt("1", pomodoroTimeGet)
@@ -73,16 +80,17 @@ class Settings : AppCompatActivity() {
         Toast.makeText(applicationContext, "Saved", Toast.LENGTH_SHORT).show()
     }
 
-    fun returnMain(v: View?) {
+    private fun returnMain() {
         val intent = Intent(applicationContext, MainActivity::class.java)
         startActivity(intent)
     }
 
-    fun darkTheme(v: View?) {
-        val pref = PreferenceManager.getDefaultSharedPreferences(this)
+    private fun darkTheme() {
+        val pref = getSharedPreferences(
+            "com.example.pomodorotimer", Context.MODE_PRIVATE)
         val editor = pref.edit()
 
-        var checked = binding.darkTheme.isChecked
+        val checked = binding.darkTheme.isChecked
         editor.putBoolean("CHECKED", checked).apply()
 
         if (checked) {

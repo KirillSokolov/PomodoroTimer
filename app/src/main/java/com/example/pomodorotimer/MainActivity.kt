@@ -1,19 +1,12 @@
 package com.example.pomodorotimer
 
 import android.R
-import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.media.RingtoneManager
-import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.example.pomodorotimer.databinding.ActivityMainBinding
 import java.text.SimpleDateFormat
@@ -24,7 +17,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     var continueTimer = true
     var miliTimer: Long = 0
-    var isInit = false
+    private var isInit = false
     var timer: Long = 60 * 25 * 1000
     var check = 1
     var reset = false
@@ -33,11 +26,8 @@ class MainActivity : AppCompatActivity() {
     var longTimeGlobal = 10
     val simpleDateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
     var checkedThemeGlobal = false
-    var date = miliTimer
-    var notificationId = createID()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Todo Change the project to findViewById.
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
             val view = binding.root
@@ -48,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             ))
 
             val pref = getSharedPreferences(
-            "com.example.pomodorotimer", Context.MODE_PRIVATE);
+            "com.example.pomodorotimer", Context.MODE_PRIVATE)
             pref.apply {
                 val pomodoro = getInt("1", 25)
                 val shortTime = getInt("2", 5)
@@ -67,53 +57,34 @@ class MainActivity : AppCompatActivity() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
 
-        pomodoroTimer(view)
-        resetTimer(view)
+        pomodoroTimer()
+        resetTimer()
 
-    }
-
-    fun notification(title: String?, message: String?, context: Context) {
-        val notificationManager =
-            context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        val notificationId = createID()
-        val channelId = "channel-id"
-        val channelName = "Channel Name"
-
-        val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
-        val importance = NotificationManager.IMPORTANCE_HIGH
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val mChannel = NotificationChannel(
-                channelId, channelName, importance
-            )
-            notificationManager.createNotificationChannel(mChannel)
+        binding.pomodoro.setOnClickListener {
+            pomodoroTimer()
         }
-        val mBuilder: NotificationCompat.Builder = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.mipmap.sym_def_app_icon) //R.mipmap.ic_launcher
-            .setContentTitle(title)
-            .setContentText(message)
-            .setVibrate(longArrayOf(100, 250))
-            .setLights(Color.YELLOW, 500, 5000)
-            .setAutoCancel(true)
-            .setColor(ContextCompat.getColor(context, R.color.holo_green_dark))
-            .setSound(uri)
-        val stackBuilder: TaskStackBuilder = TaskStackBuilder.create(context)
-        stackBuilder.addNextIntent(Intent(context, MainActivity::class.java))
-        val resultPendingIntent: PendingIntent =
-            stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
-        mBuilder.setContentIntent(resultPendingIntent)
-        notificationManager.notify(notificationId, mBuilder.build())
+        binding.shortBreak.setOnClickListener {
+            shortBreak()
+        }
+        binding.longBreak.setOnClickListener {
+            longBreak()
+        }
+        binding.start.setOnClickListener {
+            test()
+        }
+        binding.stop.setOnClickListener {
+            cancelTimer()
+        }
+        binding.reset.setOnClickListener {
+            resetTimer()
+        }
+        binding.settingsButton.setOnClickListener {
+            settings()
+        }
     }
 
 
-
-    fun createID(): Int {
-        val now = Date()
-        return SimpleDateFormat("ddHHmmss", Locale.FRENCH).format(now).toInt()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun test(v: View) {
+    private fun test() {
         val mTextField = binding.standardTime
         reset = false
 
@@ -127,10 +98,7 @@ class MainActivity : AppCompatActivity() {
             isInit = true
         }
 
-        val mBuilder: NotificationCompat.Builder = onTopNotification("Pomodoro", applicationContext)
-
         object : CountDownTimer(timer, 1000) {
-            @RequiresApi(Build.VERSION_CODES.O)
             override fun onTick(millisUntilFinished: Long) {
                 if (!continueTimer) {
                     cancel()
@@ -143,29 +111,25 @@ class MainActivity : AppCompatActivity() {
                     }
                 } else {
                     miliTimer = millisUntilFinished
-                    val dateText = simpleDateFormat.format(millisUntilFinished)
+                        val dateText = simpleDateFormat.format(millisUntilFinished)
                     mTextField.text = dateText
                 }
 
-                val dateText = simpleDateFormat.format(millisUntilFinished)
-
-                onTopNotificationTick(dateText, mBuilder)
             }
 
             override fun onFinish() {
                 mTextField.text = "00:00"
-                notification("PomodoroTimer", "The time is over", applicationContext)
             }
         }.start()
     }
 
-    fun cancelTimer(v: View) {
+    private fun cancelTimer() {
         continueTimer = false
     }
 
-    fun resetTimer(v: View) {
+    private fun resetTimer() {
         reset = true
-        cancelTimer(v)
+        cancelTimer()
         isInitFalse()
 
         if (reset) {
@@ -177,9 +141,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun pomodoroTimer(v: View) {
+    fun pomodoroTimer() {
         check = 1
-        resetTimer(v)
+        resetTimer()
         isInitFalse()
         timer = 60 * pomodoroTimerGlobal * 1000L
         binding.standardTime.text = simpleDateFormat.format(pomodoroTimerGlobal * 60 * 1000)
@@ -189,9 +153,9 @@ class MainActivity : AppCompatActivity() {
         binding.pomodoro.setTextColor(ContextCompat.getColor(applicationContext, R.color.white))
     }
 
-    fun shortBreak(v: View) {
+    private fun shortBreak() {
         check = 2
-        resetTimer(v)
+        resetTimer()
         isInitFalse()
         timer = 60 * shortTimeGlobal * 1000L
         binding.standardTime.text = simpleDateFormat.format(shortTimeGlobal * 60 * 1000)
@@ -201,9 +165,9 @@ class MainActivity : AppCompatActivity() {
         binding.shortBreak.setTextColor(ContextCompat.getColor(applicationContext, R.color.white))
     }
 
-    fun longBreak(v: View) {
+    private fun longBreak() {
         check = 3
-        resetTimer(v)
+        resetTimer()
         isInitFalse()
         timer = 60 * longTimeGlobal * 1000L
         binding.standardTime.text = simpleDateFormat.format(longTimeGlobal * 60 * 1000)
@@ -227,68 +191,9 @@ class MainActivity : AppCompatActivity() {
         binding.longBreak.setTextColor(ContextCompat.getColor(applicationContext, R.color.black))
     }
 
-    fun settings(v: View) {
-        cancelTimer(v)
+    private fun settings() {
+        cancelTimer()
         val intent = Intent(applicationContext, Settings::class.java)
         startActivity(intent)
     }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    // Todo implement Broadcast Receiver
-    fun onTopNotification(title: String?,
-                          context: Context) : NotificationCompat.Builder {
-
-        val mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        val importance = NotificationManager.IMPORTANCE_HIGH
-
-        val existChannel : NotificationChannel? = mNotificationManager.getNotificationChannel("Pomodoro timer")
-        val chamaExiste = existChannel?.id.equals("Pomodoro timer")
-
-        val channelId = "Pomodoro Timer"
-        val channelName = "Countdown"
-
-        if (chamaExiste) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val mChannel = NotificationChannel(
-                    channelId, channelName, importance
-                )
-                mNotificationManager.createNotificationChannel(mChannel)
-            }
-        }
-
-        val dateText = simpleDateFormat.format(date)
-
-        var numMessages = 0
-        val mBuilder: NotificationCompat.Builder = NotificationCompat.Builder(applicationContext, channelId)
-            .setContentText(dateText)
-            .setContentTitle(title)
-            .setNumber(++numMessages)
-            .setSmallIcon(R.mipmap.sym_def_app_icon) //R.mipmap.ic_launcher
-            .setAutoCancel(true)
-            .setColor(ContextCompat.getColor(context, R.color.holo_green_dark))
-            .setOnlyAlertOnce(true)
-
-        val stackBuilder: TaskStackBuilder = TaskStackBuilder.create(context)
-        stackBuilder.addNextIntent(Intent(context, MainActivity::class.java))
-
-        mNotificationManager.notify(
-            notificationId,
-            mBuilder.build()
-        )
-
-        return mBuilder
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun onTopNotificationTick(value: String, mBuilder: NotificationCompat.Builder) {
-
-        val mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-
-        mBuilder.setContentText(value)
-        mNotificationManager.notify(
-            notificationId,
-            mBuilder.build())
-
-    }
-
 }
