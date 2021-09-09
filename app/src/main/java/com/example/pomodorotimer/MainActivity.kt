@@ -1,13 +1,21 @@
 package com.example.pomodorotimer
 
 import android.R
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Context.ALARM_SERVICE
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import com.example.pomodorotimer.databinding.ActivityMainBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -26,6 +34,9 @@ class MainActivity : AppCompatActivity() {
     var longTimeGlobal = 10
     val simpleDateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
     var checkedThemeGlobal = false
+
+    // Notification
+    val CHANNEL_ID = "1"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,6 +109,8 @@ class MainActivity : AppCompatActivity() {
             isInit = true
         }
 
+
+
         object : CountDownTimer(timer, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 if (!continueTimer) {
@@ -119,6 +132,14 @@ class MainActivity : AppCompatActivity() {
 
             override fun onFinish() {
                 mTextField.text = "00:00"
+
+                var builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_notification_clear_all)
+                    .setContentTitle("Pomodoro Timer")
+                    .setStyle(NotificationCompat.BigTextStyle()
+                        .bigText("Much longer text that cannot fit one line..."))
+                    .setContentText("Timer is finished")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             }
         }.start()
     }
@@ -196,4 +217,37 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(applicationContext, Settings::class.java)
         startActivity(intent)
     }
+
+    private fun setupNotification(added: Boolean, interval: Int, hour: Int, minute: Int) {
+        val notificationIntent = Intent(this@MainActivity, NotificationPublisher::class.java)
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        if (added) {
+            val calendar = Calendar.getInstance()
+            calendar[Calendar.HOUR_OF_DAY] = hour
+            calendar[Calendar.MINUTE] = minute
+            calendar[Calendar.SECOND] = 0
+            notificationIntent.putExtra(NotificationPublisher.KEY_NOTIFICATION_ID, 1)
+            notificationIntent.putExtra(
+                NotificationPublisher.KEY_NOTIFICATION,
+                "Hora de beber água"
+            )
+            val broadcast = PendingIntent.getBroadcast(
+                this@MainActivity, 0,
+                notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT
+            )
+            alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP, calendar.timeInMillis, (
+                        interval * 60 * 1000).toLong(), broadcast
+            )
+        } else {
+            val broadcast = PendingIntent.getBroadcast(
+                this@MainActivity, 0,
+                notificationIntent, 0
+            )
+            alarmManager.cancel(broadcast)
+        }
+    }
+
+//                        setupNotification(true, interval, hour, minute);
+
 }
