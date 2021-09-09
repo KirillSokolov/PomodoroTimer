@@ -26,6 +26,9 @@ class Settings : AppCompatActivity() {
         binding.darkTheme.setOnClickListener {
             darkTheme()
         }
+        binding.notificationEnabled.setOnClickListener {
+            setNotification()
+        }
 
         val pomodoroValue: NumberPicker = binding.pomodoroTime
         pomodoroValue.minValue = 1
@@ -46,15 +49,18 @@ class Settings : AppCompatActivity() {
         longValue.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
 
         val pref = getSharedPreferences(
-            "com.example.pomodorotimer", Context.MODE_PRIVATE)
+            "com.example.pomodorotimer", Context.MODE_PRIVATE
+        )
         pref.apply {
             val pomodoro = getInt("1", 25)
             val shortTime = getInt("2", 5)
             val longTime = getInt("3", 10)
+            val notificationE = getBoolean("NOTIFICATION", true)
 
             binding.pomodoroTime.value = pomodoro
             binding.shortTime.value = shortTime
             binding.longTime.value = longTime
+            binding.notificationEnabled.isChecked = notificationE
 
             val checked = getBoolean("CHECKED", false)
             binding.darkTheme.isChecked = checked
@@ -62,9 +68,24 @@ class Settings : AppCompatActivity() {
         }
     }
 
+    private fun setNotification() {
+        val pref = getSharedPreferences(
+            "com.example.pomodorotimer", Context.MODE_PRIVATE
+        )
+        val editor = pref.edit()
+        val statusNotification = binding.notificationEnabled.isChecked
+
+        if (statusNotification) {
+            editor.putBoolean("NOTIFICATION", statusNotification).apply()
+        } else {
+            editor.putBoolean("NOTIFICATION", statusNotification).apply()
+        }
+    }
+
     private fun saveData() {
         val pref = getSharedPreferences(
-            "com.example.pomodorotimer", Context.MODE_PRIVATE)
+            "com.example.pomodorotimer", Context.MODE_PRIVATE
+        )
         val editor = pref.edit()
 
         val pomodoroTimeGet = binding.pomodoroTime.value
@@ -87,7 +108,8 @@ class Settings : AppCompatActivity() {
 
     private fun darkTheme() {
         val pref = getSharedPreferences(
-            "com.example.pomodorotimer", Context.MODE_PRIVATE)
+            "com.example.pomodorotimer", Context.MODE_PRIVATE
+        )
         val editor = pref.edit()
 
         val checked = binding.darkTheme.isChecked
@@ -99,4 +121,6 @@ class Settings : AppCompatActivity() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
     }
+
+
 }

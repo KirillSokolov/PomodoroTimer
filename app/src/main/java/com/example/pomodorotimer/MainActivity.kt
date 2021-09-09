@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -31,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     var longTimeGlobal = 10
     val simpleDateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
     var checkedThemeGlobal = false
+    var notificationEnabled = true
 
     // Notification
     val CHANNEL_ID = "1"
@@ -52,11 +52,13 @@ class MainActivity : AppCompatActivity() {
                 val shortTime = getInt("2", 5)
                 val longTime = getInt("3", 10)
                 val checked = getBoolean("CHECKED", false)
+                val notificationE = getBoolean("NOTIFICATION", true)
 
                 pomodoroTimerGlobal = pomodoro
                 shortTimeGlobal = shortTime
                 longTimeGlobal = longTime
                 checkedThemeGlobal = checked
+                notificationEnabled = notificationE
         }
 
         if (checkedThemeGlobal) {
@@ -129,29 +131,31 @@ class MainActivity : AppCompatActivity() {
             override fun onFinish() {
                 mTextField.text = "00:00"
 
-                val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_notification_clear_all)
-                    .setContentTitle("Pomodoro Timer")
-                    .setContentText("Timer is finished")
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                if (notificationEnabled) {
+                    val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification_clear_all)
+                        .setContentTitle("Pomodoro Timer")
+                        .setContentText("Timer is finished")
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val name = "Notification timer"
-                    val descriptionText = "Channel to notify timer."
-                    val importance = NotificationManager.IMPORTANCE_DEFAULT
-                    val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                        description = descriptionText
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        val name = "Notification timer"
+                        val descriptionText = "Channel to notify timer."
+                        val importance = NotificationManager.IMPORTANCE_DEFAULT
+                        val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                            description = descriptionText
+                        }
+                        // Register the channel with the system
+                        val notificationManager: NotificationManager =
+                            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        notificationManager.createNotificationChannel(channel)
+
+                        notificationManager.notify(1, builder.build())
+                    } else {
+                        val notificationManager: NotificationManager =
+                            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        notificationManager.notify(1, builder.build())
                     }
-                    // Register the channel with the system
-                    val notificationManager: NotificationManager =
-                        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    notificationManager.createNotificationChannel(channel)
-
-                    notificationManager.notify(1, builder.build())
-                } else {
-                    val notificationManager: NotificationManager =
-                        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    notificationManager.notify(1, builder.build())
                 }
 
                 resetTimer()

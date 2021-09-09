@@ -54,6 +54,19 @@
         app:layout_constraintTop_toBottomOf="@+id/apply"
         android:drawableStart="@drawable/ic_baseline_bedtime_24" />
 
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/notificationEnabled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_baseline_notifications_active_24"
+        android:drawableLeft="@drawable/ic_baseline_notifications_active_24"
+        android:text="@string/notification"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/darkTheme"
+        android:layout_marginTop="10dp"
+        />
+
     <NumberPicker
         android:id="@+id/pomodoroTime"
         android:layout_width="wrap_content"
